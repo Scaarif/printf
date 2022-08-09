@@ -100,7 +100,7 @@ int _printf(const char *format, ...)
 		/*loop through indices(ids) - call actually_print*/
 		chars += actually_print(format, index, ids, options, str, ap);
 		va_end(ap);
-		last = _strlen((char *)format);/*last part of string(after last format string)*/
+		last = _strlen((char *)format);/*last part of string*/
 		chars += print_string(format, last_start, last, str);
 		return (chars);
 	}
