@@ -51,8 +51,7 @@ int *get_indices(const char *str)
 		}
 		i++;
 	}
-	printf("no of format strings: %d\n", ids);
-	/*allocate memory to the array and initialize*/
+	/*printf("no of format strings: %d\n", ids);*/
 	indices = malloc(sizeof(int) * (ids + 1));
 	if (indices == NULL)
 	{
@@ -127,7 +126,7 @@ int print_str(va_list arg, ...)
 	char *s, *str;
 
 	s = va_arg(arg, char *);
-	n = write(1, s, strlen(s));
+	n = write(1, s, _strlen(s));
 	va_start(ap, arg);
 	str = va_arg(ap, char *);
 	for (; s[i] != '\0'; i++)

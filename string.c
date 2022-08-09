@@ -21,7 +21,7 @@ int print_Str(va_list arg, ...)
 	int num, quot, k = 1, j, temp;
 	char hold = '0', c[32];
 
-	s = va_args(arg, char *);
+	s = va_arg(arg, char *);
 	while (s[i] != '\0')
 	{
 		if ((s[i] > 0 && s[i] < 32) || s[i] >= 127)
@@ -114,7 +114,7 @@ int print_reverse_string(va_list arg, ...)
 
 	str = va_arg(arg, char *);
 	str = rev_str(str);/*reversed string*/
-	n += write(1, str, strlen(str));
+	n += write(1, str, _strlen(str));
 	va_start(ap, arg);/*this'll give the buffer str*/
 	buff_str = va_arg(ap, char *);
 	va_end(ap);

@@ -15,7 +15,7 @@
 char *manage_buffer(const char *fmt, char *str, int start, int stop)
 {
 	int count = str[0] + 1;
-	
+
 	for (; count < BUFFER && start < stop; count++, start++)
 		str[count] = fmt[start];
 	/*update str[0] at the end*/
@@ -39,7 +39,7 @@ char *manage_buffer(const char *fmt, char *str, int start, int stop)
 char *manage_buffer_with_pointers(char *str, char c)
 {
 	int count = str[0] + 1, stop = count + 1;
-	
+
 	for (; count < stop; count++)
 	{
 		str[count] = c;
@@ -65,7 +65,7 @@ char *manage_buffer_with_pointers(char *str, char c)
 int get_width(char *fmt, int idx)
 {
 	int width = 0;
-	
+
 	if (fmt[idx] == '-')
 		idx--;
 	/*printf("last char: %c\n", fmt[idx]);*/
@@ -82,21 +82,8 @@ int get_width(char *fmt, int idx)
 int _strlen(char *s)
 {
 	int i;
-	
+
 	for (i = 0; s[i] != '\0'; i++)
 		;
-	return (i);
-}
-
-/**
- * options_len - returns current number of
- * implemented specifier functions
- * @p: the array of options
- * Return: int
- */
-int options_len(fn *p)
-{
-	int i = 0;
-	
 	return (i);
 }

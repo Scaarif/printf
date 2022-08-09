@@ -55,7 +55,7 @@ void _print_num(long n, ...)
 int print_int(va_list arg, ...)
 {
 	va_list ap;
-	int n = 0, num, last_index, num_len, i = 1, width, stars;
+	int n = 0, num, last_index, num_len;
 	char neg, *str;
 
 	/*think I need to int to convert to char (ascii)?*/
@@ -83,8 +83,6 @@ int print_int(va_list arg, ...)
 	}
 	/*printf("num: %d\n", num);*/
 	num_len = _num((long)num);
-	width = get_width(str, last_index);
-	stars = width - num_len;
 	/*if extra stars, overwrite*/
 	_print_num((long)num, str);
 	n += num_len;
@@ -104,7 +102,7 @@ int print_binary(va_list arg, ...)
 	char c;
 
 	num = va_arg(arg, int);
-	/*assuming size of 32 bits*/
+	/*assuming size of 7 bits*/
 	for (i = 7; i >= 0; i--)
 	{
 		k = num >> i; /*right shift*/

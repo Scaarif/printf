@@ -86,17 +86,18 @@ int *get_flags(const char *fmt, int *arr, int *ids)
 
 int actual_specifier(const char *fmt, int idx)
 {
+	int _true1, _true2;
 
 	/*check for specifier starting at identified flag's index*/
+	_true1 = fmt[idx] >= 'a' && fmt[idx] <= 'z';
+	_true2 = fmt[idx] >= 'A' && fmt[idx] <= 'Z';
 	while (fmt[idx])
 	{
 		idx++;
 		/*check for first alphabet character after flag*/
-		if ((fmt[idx] >= 'a' && fmt[idx] <= 'z')
-		||
-		(fmt[idx] >= 'A' && fmt[idx] <= 'Z'))
+		if (_true1 || _true2)
 		{
-				return (idx); /*true - return that first index - that's the f_str*/
+			return (idx);
 		}
 	}
 	exit(99);

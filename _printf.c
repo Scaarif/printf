@@ -20,11 +20,10 @@ int actually_print(const char *format, int *index, int *ids, fn *options,
 char *str, va_list ap)
 {
 	int j, k, flg, idx = 0, start = 0, stop = 0, chars = 0;
-	int alt_stop, o_len;
+	int alt_stop;
 
 	/*printf("evaluating actually_print\n");*/
 	k = 1; /*ids[0] is the array_size*/
-	o_len = options_len(options);
 	/*loop through indices(ids)*/
 	while (k <= ids[0])
 	{
@@ -70,7 +69,6 @@ char *str, va_list ap)
 int _printf(const char *format, ...)
 {
 	int start = 0, last, chars = 0, *ids, *index, last_fs_idx, last_start;
-	int *flags;
 	char str[BUFFER];/*hold what i want to print*/
 	va_list ap;
 	fn options[] = {
@@ -91,22 +89,21 @@ int _printf(const char *format, ...)
 
 	index = get_indices(format);
 	ids = get_actual_specifiers(format, index);
-	flags = get_flags(format, index, ids);
-	printf("flags: %d\n", flags[0]);/*the no of flags*/
+	/*flags = get_flags(format, index, ids);*/
 	str[0] = 0;/*keep track of last appended to index*/
 	if (ids[0])
 	{
-		printf("no of f_strs: %d\n", ids[0]);
+		/*printf("no of f_strs: %d\n", ids[0]);*/
 		last_fs_idx = ids[0];
 		last_start = ids[last_fs_idx] + 1;
 		va_start(ap, format);
 		/*loop through indices(ids) - call actually_print*/
 		chars += actually_print(format, index, ids, options, str, ap);
 		va_end(ap);
-		last = strlen(format);/*last part of string(after last format string)*/
+		last = _strlen((char *)format);/*last part of string(after last format string)*/
 		chars += print_string(format, last_start, last, str);
 		return (chars);
 	}
-	return (print_string(format, start, strlen(format), str));
+	return (print_string(format, start, _strlen((char *)format), str));
 }
 
