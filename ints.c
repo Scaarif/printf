@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <limits.h>
 #include "main.h"
 
 /**
@@ -57,8 +58,8 @@ int print_int(va_list arg, ...)
 	va_list ap;
 	int n = 0, num, last_index, num_len;
 	char neg, *str;
+	long min;
 
-	/*think I need to int to convert to char (ascii)?*/
 	num = va_arg(arg, int);
 	va_start(ap, arg);
 	str = va_arg(ap, char *);
@@ -69,7 +70,6 @@ int print_int(va_list arg, ...)
 		n += write(1, &neg, 1);
 		/*check last char in str, if + replace it;*/
 		last_index = str[0];
-		/*printf("last_index: %d\n", last_index);*/
 		if (str[last_index] == '+' || str[last_index] == ' ' ||
 		str[last_index] == '#' || str[last_index] == '0')
 		{
@@ -81,10 +81,17 @@ int print_int(va_list arg, ...)
 		/*printf("updated_last_index: %d with: %c\n", str[0], str[last_index]);*/
 		num *= -1;
 	}
-	/*printf("num: %d\n", num);*/
-	num_len = _num((long)num);
-	/*if extra stars, overwrite*/
-	_print_num((long)num, str);
+	if (num == INT_MIN)
+	{
+		min = (long)num * -1;
+		_print_num(min, str);
+		num_len = _num(min);
+	}
+	else
+	{
+		num_len = _num((long)num);
+		_print_num((long)num, str);
+	}
 	n += num_len;
 	return (n);
 }
@@ -98,26 +105,46 @@ int print_int(va_list arg, ...)
 
 int print_binary(va_list arg, ...)
 {
-	int num, n = 0, i, k;
-	char c;
+	int num, i, k, start = 32, len = 0;
+	char bytes[BUFFER], *zero = "00";
 
 	num = va_arg(arg, int);
-	/*assuming size of 7 bits*/
-	for (i = 6; i >= 0; i--)
+	/*assuming size of 32 max bits*/
+	for (i = 31; i >= 0; i--)
 	{
 		k = num >> i; /*right shift*/
 		if (k & 1)
 		{
-			c = '1';
-			n += write(1, &c, 1);
+			bytes[i] = '1';
 		}
 		else
 		{
-			c = '0';
-			n += write(1, &c, 1);
+			bytes[i] = '0';
 		}
 	}
-	return (n);
+	for (i = 31; i >= 0; i--)
+	{
+		if (bytes[i] == '1')
+		{
+			start = i;
+			break;
+		}
+	}
+	/*printf("start: %d with %c\n", start, bytes[start]);*/
+	if (start == 32)/*we have all zeros*/
+	{
+		len += 2;
+		write(1, zero, 2);
+	}
+	else
+	{
+		for (i = start; i >= 0; i--)
+		{
+			len++;
+			write(1, bytes + i, 1);
+		}
+	}
+	return (len);
 }
 
 /**
