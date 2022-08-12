@@ -26,6 +26,7 @@ int print_Str(va_list arg, ...)
 	{
 		if ((s[i] > 0 && s[i] < 32) || s[i] >= 127)
 		{
+			/*printf("unprintable char: %c\n", s[i]);*/
 			n += write(1, _char, _strlen(_char));
 			/*get & print the ascii code for the value*/
 			num = s[i];
@@ -63,12 +64,40 @@ int print_Str(va_list arg, ...)
 
 int print_pointer(va_list arg, ...)
 {
-	int n;
-	void *value;
+	/*char extra_c = 0, padd = ' ';*/
+	int ind = BUFFER - 2, length = 2; /* length=2, for '0x': OK */
+	unsigned long num_addrs;
+	char map_to[] = "0123456789abcdef", buffer[BUFFER];
+	void *addrs = va_arg(arg, void *);/*OK*/
 
-	value = va_arg(arg, void *);
-	n = write(1, value, 16);
-	return (n);
+	/*UNUSED(width);*/
+	/*UNUSED(size);*/
+	if (addrs == NULL)
+		return (write(1, "(nil)", 5));/*OK*/
+	buffer[BUFFER - 1] = '\0';
+	/*UNUSED(precision);*/
+	num_addrs = (unsigned long)addrs;/*OK*/
+	while (num_addrs > 0)
+	{
+		buffer[ind--] = map_to[num_addrs % 16];
+		num_addrs /= 16;
+		length++;
+	}
+	/*if ((flags & F_ZERO) && !(flags & F_MINUS))*/
+		/*padd = '0';*/
+	/*if (flags & F_PLUS)*/
+		/*extra_c = '+', length++;*/
+	/*else if (flags & F_SPACE)*/
+		/*extra_c = ' ', length++;*/
+	ind++;
+	/*return (write(1, &buffer[i], BUFF_SIZE - i - 1));*/
+	/**
+	 * return (write_pointer(buffer, ind, length,
+	 * width, flags, padd, extra_c, padd_start));
+	 */
+	buffer[--ind] = 'x';
+	buffer[--ind] = '0';
+	return (write(1, &buffer[ind], length));
 }
 
 /**
@@ -132,31 +161,17 @@ int print_reverse_string(va_list arg, ...)
  */
 int rot13(va_list arg, ...)
 {
-	int n, index1 = 0, index2, i;
-	char *str, _str[BUFFER];
-	char alphabet[52] = {'A', 'B', 'C', 'D', 'E', 'F',
-			     'G', 'H', 'I', 'J', 'K', 'L',
-			     'M', 'N', 'O', 'P', 'Q', 'R',
-			     'S', 'T', 'U', 'V', 'W', 'X',
-			     'Y', 'Z', 'a', 'b', 'c', 'd',
-			     'e', 'f', 'g', 'h', 'i', 'j',
-			     'k', 'l', 'm', 'n', 'o', 'p',
-			     'q', 'r', 's', 't', 'u', 'v',
-			     'w', 'x', 'y', 'z'};
-	char rot13key[52] = {'N', 'O', 'P', 'Q', 'R', 'S',
-			     'T', 'U', 'V', 'W', 'X', 'Y',
-			     'Z', 'A', 'B', 'C', 'D', 'E',
-			     'F', 'G', 'H', 'I', 'J', 'K',
-			     'L', 'M', 'n', 'o', 'p', 'q',
-			     'r', 's', 't', 'u', 'v', 'w',
-			     'x', 'y', 'z', 'a', 'b', 'c',
-			     'd', 'e', 'f', 'g', 'h', 'i',
-			     'j', 'k', 'l', 'm'};
+	int n;
+	int index1 = 0, index2, i;
+	char *str;
+	char _str[BUFFER];
+	char alphabet[52] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	char rot13key[52] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
 
 	str = va_arg(arg, char *);
-	/*cpy str just incase its a string literal*/
+	/*copy str to _str incase its a literal string -incase we cant modify it*/
 	for (i = 0; i <= _strlen(str); i++)
-		_str[i] = str[i];
+		_str[i] = str[i];/*copy including null character*/
 	while (_str[index1])
 	{
 		for (index2 = 0; index2 < 52; index2++)
@@ -169,6 +184,7 @@ int rot13(va_list arg, ...)
 		}
 		index1++;
 	}
+	/*printf("rotated str: %s\n", _str);*/
 	n = write(1, _str, _strlen(str));
 	return (n);
 }
