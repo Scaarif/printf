@@ -132,9 +132,8 @@ int print_reverse_string(va_list arg, ...)
  */
 int rot13(va_list arg, ...)
 {
-	int n;
-	int index1 = 0, index2;
-	char *str;
+	int n, index1 = 0, index2, i;
+	char *str, _str[BUFFER];
 	char alphabet[52] = {'A', 'B', 'C', 'D', 'E', 'F',
 			     'G', 'H', 'I', 'J', 'K', 'L',
 			     'M', 'N', 'O', 'P', 'Q', 'R',
@@ -155,20 +154,21 @@ int rot13(va_list arg, ...)
 			     'j', 'k', 'l', 'm'};
 
 	str = va_arg(arg, char *);
-	while (str[index1])
+	/*cpy str just incase its a string literal*/
+	for (i = 0; i <= _strlen(str); i++)
+		_str[i] = str[i];
+	while (_str[index1])
 	{
 		for (index2 = 0; index2 < 52; index2++)
 		{
-			if (str[index1] == alphabet[index2])
+			if (_str[index1] == alphabet[index2])
 			{
-				str[index1] = rot13key[index2];
+				_str[index1] = rot13key[index2];
 				break;
 			}
 		}
-
 		index1++;
-
 	}
-	n = write(1, str, _strlen(str));
+	n = write(1, _str, _strlen(str));
 	return (n);
 }
